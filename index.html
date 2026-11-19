@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="VLTF is a conditional diffusion model for generating volume-rendering transfer functions from volumes and natural-language observation intents.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="robots" content="noindex, nofollow">
+  <title>VLTF | Learning Transfer Functions from Volumes and Language</title>
+  <link rel="icon" type="image/png" href="media/icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="scenes.js"></script>
+  <script defer src="explorer.js"></script>
+  <script defer src="teaser.js"></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <main id="main">
+    <header class="publication wrap" aria-labelledby="project-title">
+      <h1 id="project-title"><span>VLTF:</span> Learning Transfer Functions from Volumes and Language</h1>
+      <ol class="publication-authors" aria-label="Authors" role="list">
+        <li><a href="https://openreview.net/profile?id=~Qibiao_Li1">Qibiao Li</a><sup>1</sup></li>
+        <li><a href="https://openreview.net/profile?id=~Yuxuan_Wang28">Yuxuan Wang</a><sup>1</sup></li>
+        <li><a href="https://openreview.net/profile?id=~Jingyu_Wu6">Jingyu Wu</a><sup>1</sup></li>
+        <li><a href="https://openreview.net/profile?id=~Hongbo_Gao1">Hongbo Gao</a><sup>1,2</sup></li>
+        <li><a href="https://openreview.net/profile?id=~Ligang_Liu1">Ligang Liu</a><sup>1</sup></li>
+        <li><a href="https://openreview.net/profile?id=~Youcheng_Cai2">Youcheng Cai</a><sup>1</sup></li>
+      </ol>
+      <p class="publication-affiliations">
+        <span><sup>1</sup> University of Science and Technology of China (USTC)</span>
+        <span><sup>2</sup> Nanyang Technological University (NTU)</span>
+      </p>
+      <p class="publication-summary">Language-guided transfer function generation for direct volume rendering</p>
+      <nav aria-label="Project sections">
+        <a class="resource-link primary-link" href="#teaser">Video</a>
+        <a class="resource-link" href="#method">Method</a>
+        <a class="resource-link" href="#explore">Interactive examples</a>
+        <a class="resource-link" href="#results">Results</a>
+      </nav>
+    </header>
+
+    <figure id="teaser" class="teaser wrap" aria-labelledby="teaser-caption">
+      <video id="teaser-video" width="960" height="552" controls muted loop playsinline
+             preload="metadata" poster="media/teaser-poster.webp" aria-label="VLTF volume-rendering teaser">
+        <source src="media/vltf-teaser.mp4" type="video/mp4">
+        Your browser does not support inline video. <a href="media/vltf-teaser.mp4">Download the teaser video</a>.
+      </video>
+      <figcaption id="teaser-caption">Two observation intents share the same camera orbit in each scene. The ABC flow example compares a strand array with openings and bridges. The medical CT example compares lung contours with the rib cage.</figcaption>
+    </figure>
+
+    <section class="section wrap" id="abstract" aria-labelledby="abstract-title">
+      <h2 id="abstract-title">Abstract</h2>
+      <p class="body-copy">Transfer functions determine which structures become visible in direct volume rendering. <strong>VLTF</strong> is a conditional diffusion model that generates continuous opacity transfer functions from volumes and natural-language observation intents. To construct paired supervision, VLTFDataset uses offline intent planning, agentic transfer function search, and vision–language review. VLTF predicts a compact set of B-spline coefficients from spatial, histogram, and language features. Histogram–Coefficient Alignment links each coefficient to the scalar distribution over its basis support. On medical and scientific volumes, VLTF produces intent-dependent visualizations and generates transfer functions in an average of 0.453 s per task on a single A100, without online LLM calls.</p>
+    </section>
+
+    <section class="section method-section" id="method" aria-labelledby="method-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2 id="method-title">Method</h2>
+          <p>An opacity transfer function maps scalar values to opacity. VLTF learns that mapping from a 3D volume and a natural-language observation goal.</p>
+        </div>
+        <dl class="method-steps">
+          <div><dt>Encode the inputs</dt><dd>Fuse 3D spatial features, global histogram statistics, and a language embedding.</dd></div>
+          <div><dt>Align features and coefficients</dt><dd>Attach local histogram statistics to each coefficient over its B-spline basis support.</dd></div>
+          <div><dt>Generate an opacity curve</dt><dd>Jointly denoise 32 coefficients and decode them with a fixed cubic B-spline basis.</dd></div>
+        </dl>
+        <figure class="paper-figure">
+          <a href="media/framework.webp" aria-label="Open the full-size VLTF framework diagram">
+            <img src="media/framework.webp" width="2100" height="1050" loading="lazy" decoding="async" alt="VLTF framework showing offline intent planning, iterative transfer-function search and review, followed by multimodal conditioning and B-spline coefficient diffusion.">
+          </a>
+          <figcaption>Offline teacher generation and the VLTF inference architecture.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section wrap" id="explore" aria-labelledby="explore-title">
+      <div class="section-heading">
+        <h2 id="explore-title">Qualitative Visualization</h2>
+        <p>Select an observation intent to see how the generated opacity curve changes which structures are visible in the same volume.</p>
+      </div>
+      <noscript><p>Enable JavaScript to switch volumes and compare opacity curves.</p></noscript>
+      <div class="explorer">
+        <div class="explorer-toolbar">
+          <div class="scene-tabs" id="scene-tabs" role="group" aria-label="Select a volume" hidden></div>
+          <p id="scene-note" aria-live="polite">Thorax · Teaser example</p>
+        </div>
+        <div class="explorer-grid">
+          <figure class="result-preview">
+            <div class="result-image">
+              <img id="case-image" src="media/ct-1.webp" width="720" height="720" loading="lazy" decoding="async" alt="CT volume rendering emphasizing the envelopes of both lungs">
+            </div>
+            <figcaption><span class="sample-dot ct-dot"></span> VLTF rendering <span id="result-label">Show lung contours</span></figcaption>
+          </figure>
+          <div class="intent-panel">
+            <h3>Observation intent</h3>
+            <div class="intent-choices" role="group" aria-label="Select an observation intent" id="intent-choices" hidden></div>
+            <blockquote id="case-prompt" aria-live="polite">Show the overall shapes of both lungs, including their apices, basal contours and medial indentations around the heart.</blockquote>
+            <div class="tf-panel" id="tf-panel" hidden>
+              <div class="chart-header">
+                <h3>Opacity transfer function</h3>
+                <label class="overlay-control"><input type="checkbox" id="overlay-curves"> Overlay curves</label>
+              </div>
+              <canvas id="tf-chart" role="img" aria-label="Opacity plotted against normalized scalar value">The chart plots opacity against normalized scalar value for the selected intent.</canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap dataset-section" id="dataset" aria-labelledby="dataset-title">
+      <div class="section-heading">
+        <h2 id="dataset-title">VLTFDataset</h2>
+        <p>An offline agent proposes observation intents, searches for matching transfer functions through rendering feedback, and saves approved volume–intent–TF triplets.</p>
+      </div>
+      <div class="dataset-grid">
+        <article>
+          <div class="dataset-image ct-image"><img src="media/ct-3.webp" width="720" height="720" loading="lazy" decoding="async" alt="Medical CT rendering of the thoracic skeleton"></div>
+          <div class="dataset-card-copy">
+            <h3>Medical CT</h3>
+            <p>Scans from TotalSegmentator v2.0.1, with intents covering anatomical morphology, spatial relationships, and material appearance.</p>
+            <dl><div><dt>Volumes</dt><dd>1,228</dd></div><div><dt>Triplets</dt><dd>7,284</dd></div></dl>
+          </div>
+        </article>
+        <article>
+          <div class="dataset-image abc-image"><img src="media/abc-3.webp" width="720" height="720" loading="lazy" decoding="async" alt="Scientific volume rendering of interleaved flow structures"></div>
+          <div class="dataset-card-copy">
+            <h3>Scientific volumes</h3>
+            <p>Scalar fields from The Well, yt sample data, JHTDB, and Open SciVis, spanning fluid flow, magnetohydrodynamics, and reaction–diffusion.</p>
+            <dl><div><dt>Volumes</dt><dd>752</dd></div><div><dt>Triplets</dt><dd>4,460</dd></div></dl>
+          </div>
+        </article>
+      </div>
+      <p class="section-note">Train and test splits are defined by volume, so all intents for a given volume stay in the same split.</p>
+    </section>
+
+    <section class="section results-section" id="results" aria-labelledby="results-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2 id="results-title">Results on Held-out Volumes</h2>
+          <p>VLTF matched the highest expert ratings among evaluated methods on medical CT and received the highest ratings on scientific volumes.</p>
+        </div>
+        <div class="evaluation-grid">
+          <div class="evaluation-card">
+            <h3>Online generation time</h3>
+            <dl class="latency-results">
+              <div><dt>VLTF</dt><dd>0.453 <small>s</small></dd></div>
+              <div><dt>Evaluated GPT baselines</dt><dd>18.455–143.514 <small>s</small></dd></div>
+            </dl>
+            <p>Mean seconds per task on the combined test sets. VLTF uses one A100 and 50 DDIM steps. Timing excludes offline preprocessing and final rendering.</p>
+          </div>
+          <div class="evaluation-card">
+            <h3>Expert ratings</h3>
+            <table aria-describedby="ratings-note">
+              <thead><tr><th scope="col">Domain</th><th scope="col">VLTF</th><th scope="col">Best baseline</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Medical</th><td>4.0 / 4.0 / 4.0</td><td>4.0 / 4.0 / 4.0</td></tr>
+                <tr><th scope="row">Scientific</th><td>3.5 / 3.5 / 3.5</td><td>2.5 / 2.5 / 3.0</td></tr>
+              </tbody>
+            </table>
+            <p id="ratings-note">Six experts rated 216 volume–intent pairs on a 1–5 scale. Scores are listed in the order of intent alignment, target visibility, and context preservation.</p>
+          </div>
+        </div>
+        <figure class="paper-figure qualitative-figure">
+          <a href="media/comparison.webp" aria-label="Open the full-size comparison with GPT Agent baselines">
+            <img src="media/comparison.webp" width="2240" height="629" loading="lazy" decoding="async" alt="Qualitative comparison of VLTF and three GPT Agent baselines on CFD, SDR-08, and medical CT, with matching detail crops and opacity curves.">
+          </a>
+          <figcaption>VLTF and three GPT Agent baselines on selected CFD, SDR-08, and medical CT test cases.</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p>VLTF · Learning Transfer Functions from Volumes and Language</p>
+      <a class="back-link" href="#top">Back to top</a>
+    </div>
+  </footer>
+</body>
+</html>
