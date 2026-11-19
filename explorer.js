@@ -77,9 +77,10 @@
     const x = value => bounds.left + value * (bounds.right - bounds.left);
     const y = value => bounds.bottom - (value / maximum) * (bounds.bottom - bounds.top);
 
+    const palette = getComputedStyle(chart);
     context.font = '12px system-ui, sans-serif';
-    context.fillStyle = '#435954';
-    context.strokeStyle = '#dce8e1';
+    context.fillStyle = palette.getPropertyValue('--muted').trim();
+    context.strokeStyle = palette.getPropertyValue('--line-subtle').trim();
     context.lineWidth = 1;
     context.textAlign = 'right';
     context.textBaseline = 'middle';
@@ -93,7 +94,7 @@
       context.fillText(i === 0 ? '0' : tick.toFixed(1), bounds.left - 7, level);
     }
 
-    context.strokeStyle = '#8ca59a';
+    context.strokeStyle = palette.getPropertyValue('--chart-axis').trim();
     context.beginPath();
     context.moveTo(bounds.left, bounds.top);
     context.lineTo(bounds.left, bounds.bottom);
