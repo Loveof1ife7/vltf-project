@@ -74,6 +74,17 @@ h1, h2, h3 { margin: 0; line-height: 1.2; }
 .resource-link:hover { background: var(--surface-tint); }
 .primary-link { background: var(--accent); border-color: var(--accent); color: white; }
 .primary-link:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+.share-address {
+  display: block;
+  width: min(100%, 28rem);
+  margin: .7rem auto 0;
+  padding: .4rem .8rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: center;
+}
 .teaser { width: min(880px, calc(100% - 64px)); margin-top: 1.75rem; scroll-margin-top: 1rem; }
 .teaser video {
   display: block;
