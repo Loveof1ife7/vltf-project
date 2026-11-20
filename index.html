@@ -20,7 +20,7 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="VLTF medical CT and ABC flow renderings showing a rib cage and curved bridges.">
-  <meta property="og:video" content="https://loveof1ife7.github.io/vltf-project/media/vltf-teaser.mp4">
+  <meta property="og:video" content="https://loveof1ife7.github.io/vltf-project/media/vltf-teaser.mp4?v=2">
   <meta property="og:video:type" content="video/mp4">
   <meta property="og:video:width" content="960">
   <meta property="og:video:height" content="552">
@@ -66,11 +66,12 @@
 
     <figure id="teaser" class="teaser wrap" aria-labelledby="teaser-caption">
       <video id="teaser-video" width="960" height="552" controls muted loop playsinline
-             preload="metadata" poster="media/teaser-poster.webp" aria-label="VLTF volume-rendering teaser">
-        <source src="media/vltf-teaser.mp4" type="video/mp4">
-        Your browser does not support inline video. <a href="media/vltf-teaser.mp4">Download the teaser video</a>.
+             preload="metadata" poster="media/teaser-poster.webp?v=2" aria-label="VLTF volume-rendering teaser" aria-describedby="teaser-caption">
+        <source src="media/vltf-teaser.mp4?v=2" type="video/mp4">
+        <track kind="chapters" src="media/teaser-chapters.vtt" srclang="en" label="Cases" default>
+        Your browser does not support inline video. <a href="media/vltf-teaser.mp4?v=2">Download the teaser video</a>.
       </video>
-      <figcaption id="teaser-caption">Two observation intents share the same camera orbit in each scene. The ABC flow example compares a strand array with openings and bridges. The medical CT example compares lung contours with the rib cage.</figcaption>
+      <figcaption id="teaser-caption">Each pair compares two observation intents using the same volume and camera path. The cases are ABC flow (0:02), Gray–Scott reaction–diffusion (0:09), thoracic CT (0:16), and TACC isotropic turbulence (0:23). The Gray–Scott volume stacks 16 simulation time steps vertically.</figcaption>
     </figure>
 
     <section class="section wrap" id="abstract" aria-labelledby="abstract-title">
